@@ -110,4 +110,54 @@ class ArticleManager extends AbstractEntityManager
         $sql = "DELETE FROM article WHERE id = :id";
         $this->db->query($sql, ['id' => $id]);
     }
+
+    /**
+     * Retourne le nombre total d'articles.
+     * Permet au monitoring de connaître le nombre d'articles présents sur le blog.
+     */
+    public function getNbArticles(): int
+    {
+        $sql = "SELECT COUNT(*) FROM article";
+
+        $result = $this->db->query($sql);
+
+        return (int)$result->fetchColumn();
+    }
+
+
+    /**
+     * Retourne le nombre total de vues.
+     * Additionne toutes les vues des articles pour afficher une statistique globale.
+     */
+    public function getTotalViews(): int
+    {
+        $sql = "SELECT SUM(nb_views) FROM article";
+
+        $result = $this->db->query($sql);
+
+        return (int)$result->fetchColumn();
+    }
+
+
+    /**
+     * Retourne l'article le plus consulté.
+     * Permet d'identifier l'article ayant le plus de succès dans le monitoring.
+     */
+    public function getMostViewedArticle(): ?Article
+    {
+        $sql = "SELECT * 
+            FROM article 
+            ORDER BY nb_views DESC 
+            LIMIT 1";
+
+        $result = $this->db->query($sql);
+
+        $article = $result->fetch();
+
+        if ($article) {
+            return new Article($article);
+        }
+
+        return null;
+    }
 }
