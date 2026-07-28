@@ -47,6 +47,52 @@ class AdminController
 
         $mostViewedArticle = $articleManager->getMostViewedArticle();
 
+        // Récupération de tous les articles afin de les afficher dans un tableau triable.
+        $articles = $articleManager->getAllArticles();
+
+        // Sécurisation des paramètres de tri.
+        $sort = Utils::request("sort", "title");
+
+        if (!in_array($sort, ["title", "date", "views"])) {
+            $sort = "title";
+        }
+
+
+        $order = Utils::request("order", "ASC");
+
+        if (!in_array($order, ["ASC", "DESC"])) {
+            $order = "ASC";
+        }
+
+        // Tri réalisé directement en PHP avec usort().
+        // Aucun langage externe ou librairie n'est utilisé.
+        usort($articles, function ($a, $b) use ($sort, $order) {
+
+            switch ($sort) {
+
+                case "views":
+                    // Tri selon le nombre de vues.
+                    $result = $a->getNbViews() <=> $b->getNbViews();
+                    break;
+
+
+                case "date":
+                    // Tri selon la date de création.
+                    $result = $a->getDateCreation() <=> $b->getDateCreation();
+                    break;
+
+
+                case "title":
+                default:
+                    // Tri alphabétique selon le titre.
+                    $result = strcmp($a->getTitle(), $b->getTitle());
+                    break;
+            }
+
+
+            // Inversion du résultat si le tri demandé est décroissant.
+            return $order === "ASC" ? $result : -$result;
+        });
 
         // Récupération des statistiques des commentaires.
         // Permet d'afficher le nombre total de commentaires.
@@ -63,7 +109,14 @@ class AdminController
             'nbArticles' => $nbArticles,
             'nbComments' => $nbComments,
             'totalViews' => $totalViews,
-            'mostViewedArticle' => $mostViewedArticle
+            'mostViewedArticle' => $mostViewedArticle,
+
+            // Envoi des articles triés à la vue.
+            'articles' => $articles,
+
+            // Envoi des paramètres de tri pour afficher l'état actuel.
+            'sort' => $sort,
+            'order' => $order
         ]);
     }
 
