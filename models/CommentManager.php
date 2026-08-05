@@ -23,6 +23,25 @@ class CommentManager extends AbstractEntityManager
     }
 
     /**
+     * Récupère tous les commentaires.
+     * @return array
+     */
+    public function getAllComments(): array
+    {
+        $sql = "SELECT * FROM comment ORDER BY date_creation DESC";
+        $result = $this->db->query($sql);
+        $comments = [];
+
+        while ($comment = $result->fetch()) {
+
+            // Transformation des résultats SQL en objets Comment.
+            $comments[] = new Comment($comment);
+        }
+
+        return $comments;
+    }
+
+    /**
      * Récupère un commentaire par son id.
      * @param int $id : l'id du commentaire.
      * @return Comment|null : un objet Comment ou null si le commentaire n'existe pas.

@@ -121,6 +121,60 @@ class AdminController
     }
 
     /**
+     * Affiche la page de gestion des commentaires.
+     * @return void
+     */
+    public function showComments(): void
+    {
+
+        // Vérifie que seul un utilisateur connecté peut accéder à cette page.
+        $this->checkIfUserIsConnected();
+
+        // Récupération de tous les commentaires depuis la base de données.
+        $commentManager = new CommentManager();
+
+        $comments = $commentManager->getAllComments();
+
+        // Création de la vue de gestion des commentaires.
+        $view = new View("Gestion des commentaires");
+
+        // Transmission des commentaires à la vue.
+        $view->render("comments", [
+            'comments' => $comments
+        ]);
+    }
+
+    /**
+     * Supprime un commentaire.
+     * @return void
+     */
+    public function deleteComment(): void
+    {
+        // Vérifie que seul un utilisateur connecté peut supprimer un commentaire.
+        $this->checkIfUserIsConnected();
+
+        // Récupération de l'identifiant du commentaire.
+        $id = Utils::request("id", -1);
+
+        // Recherche du commentaire correspondant.
+        $commentManager = new CommentManager();
+
+        $comment = $commentManager->getCommentById($id);
+
+
+        if (!$comment) {
+            throw new Exception("Le commentaire demandé n'existe pas.");
+        }
+
+        // Suppression du commentaire trouvé.
+        $commentManager->deleteComment($comment);
+
+        // Retour vers la liste des commentaires après suppression.
+        Utils::redirect("comments");
+    }
+
+
+    /**
      * Vérifie que l'utilisateur est connecté.
      * @return void
      */

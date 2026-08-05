@@ -130,19 +130,18 @@ class Article extends AbstractEntity
     }
 
     /**
-     * Setter pour le nombre de vues.
-     */
-    public function setNbViews(int $nbViews): void
-    {
-        $this->nbViews = $nbViews;
-    }
-
-
-    /**
      * Getter pour le nombre de vues.
      */
     public function getNbViews(): int
     {
         return $this->nbViews;
+    }
+
+    /**
+     * Setter pour le nombre de vues.
+     */
+    public function setNbViews(int $nbViews): void
+    {
+        $this->nbViews = $nbViews;
     }
 }

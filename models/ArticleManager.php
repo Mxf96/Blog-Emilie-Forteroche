@@ -45,7 +45,7 @@ class ArticleManager extends AbstractEntityManager
      */
     public function incrementViews(int $id): void
     {
-        // MODIFICATION : mise à jour directe en base pour augmenter le compteur sans écraser les autres valeurs.
+        // Mise à jour directe en base pour augmenter le compteur sans écraser les autres valeurs.
         $sql = "UPDATE article 
             SET nb_views = nb_views + 1 
             WHERE id = :id";

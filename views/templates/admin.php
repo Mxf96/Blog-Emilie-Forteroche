@@ -38,3 +38,7 @@
 <a class="submit" href="index.php?action=monitoring">
     Accéder au monitoring
 </a>
+
+<a class="submit" href="index.php?action=comments">
+    Gérer les commentaires
+</a>
